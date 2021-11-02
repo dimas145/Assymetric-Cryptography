@@ -1,13 +1,17 @@
 
 #main-area {
-    padding: 30px 50px 20px 50px;
+    padding: 40px 50px 40px 50px;
     background-color: rgb(199, 242, 255);
-    height: 100vh;
+    height: 100%;
 }
 
 #navbar-area {
     border-radius: 15px;
-    height: 65px;
+    height: 55px;
+}
+
+.navbar-brand {
+    font-size: 18px;
 }
 
 #input-text-box {
@@ -33,7 +37,7 @@
     display: grid;
     grid-template-areas: 'app-input app-setting app-output';
     grid-template-columns: 37% 26% 37%;
-    grid-template-rows: 800px;
+    grid-template-rows: 700px;
     width: 100%;
     margin-top: 30px;
 }
@@ -55,7 +59,7 @@
 }
 
 .app-container-area {
-    padding: 55px 30px 20px 30px;
+    padding: 25px 30px 20px 30px;
 }
 
 .form-label {
@@ -69,7 +73,7 @@
 
 .app-setting-title {
     grid-area: app-setting-title;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .app-setting-action {
