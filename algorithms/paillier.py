@@ -9,14 +9,17 @@ class Paillier:
         return abs(a * b) // math.gcd(a, b)
 
     def _L(self, x, n):
-        return (x - 1) / n
+        return (x - 1) // n
 
-    def generate_keys(self, p, q):
+    def generate_keys(self, keys):
+        p, q = map(int, keys.split())
+        print(p,q)
+
         # TODO check gcd(pq, (p-1)(q-1)) = 1
         n = p * q
         lamb = self._lcm(p - 1, q - 1)
         g = randrange(n * n)
-        mu = pow(self._L(pow(g, lamb, n * n), n), -1)
+        mu = pow(self._L(pow(g, lamb, n * n), n), -1, n)
 
         # private key = (lamb, mu)
         # public key = (g, n)

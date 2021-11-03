@@ -21,6 +21,18 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/generate-key-page")
+def generate_key_page():
+    return render_template("generate_key.html", title='Generate Key')
+
+
+@app.route("/key-form", methods=["POST"])
+def key_form():
+    if request.method == "POST":
+        algorithm_id = request.form["algorithm_id"]
+        return render_template("key_form/form" + str(algorithm_id) + ".html")
+
+
 @app.route("/form", methods=["POST"])
 def form():
     if request.method == "POST":
@@ -32,12 +44,33 @@ def form():
 def update():
     if request.method == "POST":
         text = request.form["text"]
-        key = request.form["key"]
+        keys = request.form["keys"]
         command = request.form["command"]
         type = request.form["type"]
         alphabets = re.sub(r'[^a-zA-Z]', '', text).upper()
 
         # TODO
+        if (type == "1"):
+            return algorithms.RSA().execute(command, text, keys)
+        else:
+            return keys + " " + command + " " + type + " " + alphabets
+
+
+@app.route("/generate-keys", methods=["POST"])
+def generate_keys():
+    if request.method == "POST":
+        keys = request.form["keys"]
+        type = request.form["type"]
+
+        # TODO
+        if (type == "1"):
+            n, e, d = algorithms.RSA().generate_keys(keys)
+            return str(n) + " " + str(e) + " " + str(d)
+        elif (type == "3"):
+            g, n, lamb, mu = algorithms.Paillier().generate_keys(keys)
+            return str(g) + " " + str(n) + " " + str(lamb) + " " + str(mu)
+        else:
+            return keys
 
 
 @app.route("/action", methods=["POST"])

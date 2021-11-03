@@ -1,10 +1,11 @@
-var select = document.getElementById('select-cipher')
+var select = document.getElementById('select-algorithm')
 var m_key = 0
 
-change_config_form(1)
+change_config_form(1);
 
 select.addEventListener('change', () => {
-    change_config_form(select.value)
+    console.log("TEST1");
+    change_config_form(select.value);
 });
 
 function execute() {
