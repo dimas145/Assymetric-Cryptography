@@ -67,7 +67,6 @@ def update():
             else:
                 return machine.decrypt_full(text, keys)
         elif (type == "3"):
-            print(request.form["r"])
             test = algorithms.Paillier().execute(command, text, keys, int(request.form["r"]))
             return str(test)
         elif (type == "4"):
