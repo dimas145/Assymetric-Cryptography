@@ -52,6 +52,10 @@ def update():
         # TODO
         if (type == "1"):
             return algorithms.RSA().execute(command, text, keys)
+        elif (type == "3"):
+            print(request.form["r"])
+            test = algorithms.Paillier().execute(command, text, keys, int(request.form["r"]))
+            return str(test)
         else:
             return keys + " " + command + " " + type + " " + alphabets
 
@@ -71,13 +75,6 @@ def generate_keys():
             return str(g) + " " + str(n) + " " + str(lamb) + " " + str(mu)
         else:
             return keys
-
-
-@app.route("/action", methods=["POST"])
-def action():
-    if request.method == "POST":
-        state = request.form["state"]
-        return "State : " + state
 
 
 if __name__ == "__main__":

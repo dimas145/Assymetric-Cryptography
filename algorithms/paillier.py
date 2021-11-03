@@ -1,3 +1,4 @@
+from re import M
 from .utils import Utils
 from random import randrange
 
@@ -19,17 +20,26 @@ class Paillier:
         n = p * q
         lamb = self._lcm(p - 1, q - 1)
         g = randrange(n * n)
+        g = 5652
         mu = pow(self._L(pow(g, lamb, n * n), n), -1, n)
 
         # private key = (lamb, mu)
         # public key = (g, n)
         return g, n, lamb, mu
 
-    def encrypt(self, m, g, n, r=0):
+    def _encrypt(self, m, keys, r=0):
+        g, n = map(int, keys.split())
         while math.gcd(r, n) != 1:
             r = randrange(n)
 
-        return (pow(g, m) * pow(r, n)) % (n * n)
+        return (pow(g, int(m)) * pow(r, n)) % (n * n)
 
-    def decrypt(self, c, n, lamb, mu):
-        return int((self._L(pow(c, lamb, n * n), n) * mu) % n)
+    def _decrypt(self, c, keys):
+        n, lamb, mu = map(int, keys.split())
+        return int((self._L(pow(int(c), lamb, n * n), n) * mu) % n)
+
+    def execute(self, command, text, keys, r):
+        if (command == "encrypt"):
+            return self._encrypt(text, keys, r)
+        else:
+            return self._decrypt(text, keys)
