@@ -20,7 +20,6 @@ class Paillier:
         n = p * q
         lamb = self._lcm(p - 1, q - 1)
         g = randrange(n * n)
-        g = 5652
         mu = pow(self._L(pow(g, lamb, n * n), n), -1, n)
 
         # private key = (lamb, mu)

@@ -53,7 +53,6 @@ def update():
         if (type == "1"):
             return algorithms.RSA().execute(command, text, keys)
         elif (type == "3"):
-            print(request.form["r"])
             test = algorithms.Paillier().execute(command, text, keys, int(request.form["r"]))
             return str(test)
         else:
