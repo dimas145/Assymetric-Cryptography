@@ -59,3 +59,9 @@ class RSA:
             text += chr(int(decrypted[i:i + 2]) + 65)
 
         return text
+
+    def execute(self, command, text, keys):
+        if (command == "encrypt"):
+            return self._encrypt(text, keys)
+        else:
+            return self._decrypt(text, keys)

@@ -51,7 +51,7 @@ function execute_key() {
             } else if (type == 3) {
                 var filename = "paillier";
                 var downloadname = new Date().toJSON().slice(0, 19).replaceAll("-", "").replaceAll(":", "").replaceAll("T", "_") + "_" + filename;
-                var private_key = result_list[2] + " " + result_list[3];
+                var private_key = result_list[1] + " " + result_list[2] + " " + result_list[3];
                 var public_key = result_list[0] + " " + result_list[1];
                 download(downloadname + ".pri", private_key);
                 download(downloadname + ".pub", public_key);
