@@ -48,6 +48,13 @@ function execute_key() {
                 var public_key = result_list[0] + " " + result_list[2];
                 download(downloadname + ".pri", private_key);
                 download(downloadname + ".pub", public_key);
+            } else if (type == 3) {
+                var filename = "paillier";
+                var downloadname = new Date().toJSON().slice(0, 19).replaceAll("-", "").replaceAll(":", "").replaceAll("T", "_") + "_" + filename;
+                var private_key = result_list[2] + " " + result_list[3];
+                var public_key = result_list[0] + " " + result_list[1];
+                download(downloadname + ".pri", private_key);
+                download(downloadname + ".pub", public_key);
             }
         }
     }
@@ -55,4 +62,12 @@ function execute_key() {
     request.open('POST', '/generate-keys', true);
     request.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
     request.send("keys=" + keys + "&type=" + type);
+}
+
+function download(filename, textInput) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textInput));
+    element.setAttribute('download', filename);
+    document.body.appendChild(element);
+    element.click();
 }
