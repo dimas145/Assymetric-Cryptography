@@ -1,5 +1,5 @@
 from .ecc import (
-    ECC,
+    ECCElGamalMachine,
 )
 from .elgamal import (
     ElGamal, ElGamalMachine
