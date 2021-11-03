@@ -1,11 +1,12 @@
 from .utils import Utils
 
-import math
 import re
 
 
 class RSA:
-    def generate_keys(self, p, q, e):
+    def generate_keys(self, keys):
+        p, q, e = map(int, keys.split())
+
         n = p * q
         phi = (p - 1) * (q - 1)
 
@@ -13,7 +14,7 @@ class RSA:
 
         # private key = (d, n)
         # public key = (e, n)
-        return n, e, d
+        return e, d, n
 
     def _multiplicative_inverse(self, e, phi):
         return self._extended_euclid(e, phi)[1] % phi
@@ -30,8 +31,9 @@ class RSA:
         text = re.sub(r'[^a-zA-Z]', '', text).upper()
         return ''.join(str(ord(c) - 65).zfill(2) for c in text)
 
-    def encrypt(self, text, e, n):
+    def _encrypt(self, text, keys):
         text = self._preprocess(text)
+        e, n = map(int, keys.split())
 
         block_size = 4
         encrypted = ""
@@ -42,7 +44,9 @@ class RSA:
 
         return encrypted
 
-    def decrypt(self, text, d, n):
+    def _decrypt(self, text, keys):
+        d, n = map(int, keys.split())
+
         block_size = 4
         decrypted = ""
         for i in range(0, len(text), block_size):

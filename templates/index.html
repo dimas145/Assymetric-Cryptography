@@ -1,39 +1,43 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Assymetric Cipher</title>
-  </head>
-  <body>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <title>Assymetric Cipher</title>
+</head>
+
+<body>
 
   <div id="main-area">
 
     <nav id="navbar-area" class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="#"><strong>Assymetric Cryptography</strong></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand" href="/"><strong>Assymetric Cryptography</strong></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="#">Home</a>
+            <a class="nav-link" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Generate Key</a>
+            <a class="nav-link" href="/generate-key-page">Generate Key</a>
           </li>
         </ul>
       </div>
     </nav>
-    
+
     <div class="app-container">
 
       <div class="app-input">
-        
+
         <div class="app-container-title">
           <h5 id="left-tab">Plaintext</h5>
         </div>
@@ -60,43 +64,46 @@
         <div class="app-setting-title">
           <h3 class="app-setting-title-text">Action</h3>
         </div>
-        
-        <div class="app-setting-action">        
+
+        <div class="app-setting-action">
           <div class="btn-group btn-group-toggle app-setting-action-button" data-toggle="buttons">
             <label id="app-setting-action-button-1" class="btn btn-primary shadow-none encrypt-button active">
-              <input type="radio" name="action-options" id="encrypt" autocomplete="off" onchange="change_action(this);" checked> Encrypt
+              <input type="radio" name="action-options" id="encrypt" autocomplete="off" onchange="change_action(this);"
+                checked> Encrypt
             </label>
             <label id="app-setting-action-button-2" class="btn btn-primary shadow-none decrypt-button">
-              <input type="radio" name="action-options" id="decrypt" autocomplete="off" onchange="change_action(this);"> Decrypt
+              <input type="radio" name="action-options" id="decrypt" autocomplete="off" onchange="change_action(this);">
+              Decrypt
             </label>
           </div>
         </div>
-        
+
         <div class="app-setting-form">
-          
+
           <div class="app-setting-form-container">
 
             <h4 class="form-config-title-main">Cipher Configuration</h2>
-            
-            <select id="select-cipher" class="custom-select">
-              <option value="1" selected>RSA</option>
-              <option value="2">ElGamal</option>
-              <option value="3">Paillier</option>
-              <option value="4">ECC</option>
-            </select>
 
-            <div id="app-setting-form-dynamic">
+              <select id="select-algorithm" class="custom-select">
+                <option value="1" selected>RSA</option>
+                <option value="2">ElGamal</option>
+                <option value="3">Paillier</option>
+                <option value="4">ECC</option>
+              </select>
 
-            </div>
-            
+              <div id="app-setting-form-dynamic">
+
+              </div>
+
           </div>
 
         </div>
-        
+
         <div class="app-setting-execute">
-          <button id="execute-button" class="btn btn-primary shadow-none btn-block execute-button" type="button" id="btn-post" onclick="execute();">Execute!</button>
+          <button id="execute-button" class="btn btn-primary shadow-none btn-block execute-button" type="button"
+            id="btn-post" onclick="execute();">Execute!</button>
         </div>
-      
+
       </div>
 
       <div class="app-output">
@@ -104,15 +111,17 @@
         <div class="app-container-title">
           <h5 id="right-tab">Ciphertext</h5>
         </div>
-      
+
         <div class="app-container-area">
 
           <form>
             <div class="form-group">
               <label class="form-label float-left" for="output-text-box">Output Text :</label>
-              <textarea class="form-control" id="output-text-box" rows="17" spellcheck="false" readonly="true"></textarea>
+              <textarea class="form-control" id="output-text-box" rows="17" spellcheck="false"
+                readonly="true"></textarea>
             </div>
-            <button type="button" id="download-button" class="download-button btn btn-primary btn-lg btn-block">Download Result</button>
+            <button type="button" id="download-button" class="download-button btn btn-primary btn-lg btn-block">Download
+              Result</button>
           </form>
 
         </div>
@@ -120,13 +129,20 @@
       </div>
 
     </div>
-  
+
   </div>
 
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
