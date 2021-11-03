@@ -3,7 +3,6 @@ from .utils import Utils
 import random
 import math
 
-
 class EllipticPoint:
     def __init__(self, x=0, y=0, inf=False):
         self.x = x if not inf else math.inf
@@ -33,7 +32,6 @@ class EllipticPoint:
 
     def __str__(self):
         return "({0}, {1})".format(self.x, self.y)
-
 
 class EllipticCurve:
     def __init__(self, a, b, p):
@@ -81,7 +79,7 @@ class EllipticCurve:
                 return EllipticPoint(xr, yr)
 
     def point_substraction(self, P, Q):
-        return self.point_addition(P, Q.mirror())
+        return self.point_addition(P, EllipticPoint(Q.get_x(), -Q.get_y() % self.p))
 
     def point_multiplication(self, P):
         
@@ -112,7 +110,6 @@ class EllipticCurve:
     
             return res
 
-
 class ECCElGamalMachine:
     def __init__(self):
         pass
@@ -136,6 +133,7 @@ class ECCElGamalMachine:
     
     def create_agreement(self, bit):
         p = self.create_random_prime(bit)
+
         curve_a = random.randint(-p, p)
         curve_b = random.randint(-p, p)
 
@@ -150,8 +148,9 @@ class ECCElGamalMachine:
             B = curve.points[random.randint(1, len(curve.points) - 2)]
             if(not B.is_infinity()):
                 found = True
-        
-        return p, curve_a, curve_b, B
+        k = 2
+
+        return p, curve_a, curve_b, B, k
 
     def create_key(self, p, curve_a, curve_b, B):
 
@@ -165,8 +164,84 @@ class ECCElGamalMachine:
 
         return public_key, private_key
 
-    def encrypt(self, message, p, public_key):
+    def point_available(self, points, x):
+        res = None
+        for point in points:
+            if(point.get_x() == x):
+                res = point
+                break
+        return res
+
+    def encode(self, message, p, curve_a, curve_b, k):
+
+        curve = EllipticCurve(curve_a, curve_b, p)
+        curve.get_points()
+
+        encoded = []
 
         for m in message:
-            k = random.randint(1, p-1)
+            m = ord(m)
+            
+            point = curve.points[k*m + 1]
+
+            encoded.append(point)  
+        return encoded
+
+    def decode(self, encrypted, p, curve_a, curve_b, k):
+        curve = EllipticCurve(curve_a, curve_b, p)
+        curve.get_points()
+        points = curve.points
+        decoded = ""
+
+        for e in encrypted:
+            for i in range(len(points)):
+                if(points[i].get_x() == e.get_x()):
+                    break
+            decoded += chr(math.floor((i - 1) / k))
+        return decoded
+
+    def encrypt(self, message, public_key, p, curve_a, curve_b, B, k):
+        curve = EllipticCurve(curve_a, curve_b, p)
+        curve.get_points()
+
+        encoded = self.encode(message, p, curve_a, curve_b, k)
+
+        # print("ENCODED")
+        # for e in encoded:
+        #     print(e)
+
+        encrypted = []
+
+        for encode in encoded:
+            found = False
+            while(not found):
+                random_k = random.randint(1, p-1)
+                kB = curve.point_scalar_multiplication(B, random_k)
+                PmkPb = curve.point_addition(encode, curve.point_scalar_multiplication(public_key, random_k))
+                if(not kB.is_infinity() and not PmkPb.is_infinity()):
+                    found = True
+            
+            encrypted.append({ 'kB': kB, 'PmkPb': PmkPb })
+            # print("kB\t:" + str(kB))
+            # print("PmkPb\t:" + str(PmkPb))
+
+        return encrypted
+
+    def decrypt(self, encrypted, private_key, p, curve_a, curve_b, k):
+        curve = EllipticCurve(curve_a, curve_b, p)
+        curve.get_points()
+
+        decrypted = []
+
+        for e in encrypted:
+            # print("PmkPb\t: " + str(e['PmkPb']))
+            # print("Mul\t: " + str(curve.point_scalar_multiplication(e['kB'], private_key)))
+            decrypted.append(curve.point_substraction(e['PmkPb'], curve.point_scalar_multiplication(e['kB'], private_key)))
+
+        # print("DECRYPTED")
+        # for e in decrypted:
+        #     print(e)
+        decoded = self.decode(decrypted, p, curve_a, curve_b, k)
+
+        return decoded
             

@@ -70,9 +70,13 @@ def generate_keys():
         if (type == "1"):
             n, e, d = algorithms.RSA().generate_keys(keys)
             return str(n) + " " + str(e) + " " + str(d)
+        elif (type == "2"):
+            return algorithms.ElGamalMachine.create_key()
         elif (type == "3"):
             g, n, lamb, mu = algorithms.Paillier().generate_keys(keys)
             return str(g) + " " + str(n) + " " + str(lamb) + " " + str(mu)
+        elif (type == "4"):
+            pass
         else:
             return keys
 

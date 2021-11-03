@@ -60,6 +60,10 @@ class ElGamalMachine:
 
         return pub_key, pri_key
 
+    def create_key_file(self, bit):
+        public_key, private_key = self.create_key(bit)
+        
+
     def encrypt(self, message, public_key):
         y = Utils.b64_to_dec(public_key['y'])
         g = Utils.b64_to_dec(public_key['g'])
