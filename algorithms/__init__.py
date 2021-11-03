@@ -2,7 +2,7 @@ from .ecc import (
     ECC,
 )
 from .elgamal import (
-    ElGamal,
+    ElGamal, ElGamalMachine
 )
 from .paillier import (
     Paillier,
