@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory
 import os
 import re
+import urllib.parse
 
 import algorithms
 
@@ -49,13 +50,38 @@ def update():
         type = request.form["type"]
         alphabets = re.sub(r'[^a-zA-Z]', '', text).upper()
 
+
         # TODO
         if (type == "1"):
             return algorithms.RSA().execute(command, text, keys)
+        elif (type == "2"):
+            text = urllib.parse.unquote(text)
+            keys = urllib.parse.unquote(keys)
+            machine = algorithms.ElGamalMachine()
+            print("text")
+            print(text)
+            print("keys")
+            print(keys)
+            if (command == "encrypt"):
+                return machine.encrypt_full(text, keys)
+            else:
+                return machine.decrypt_full(text, keys)
         elif (type == "3"):
             print(request.form["r"])
             test = algorithms.Paillier().execute(command, text, keys, int(request.form["r"]))
             return str(test)
+        elif (type == "4"):
+            text = urllib.parse.unquote(text)
+            keys = urllib.parse.unquote(keys)
+            print("text")
+            print(text)
+            print("keys")
+            print(keys)
+            machine = algorithms.ECCElGamalMachine()
+            if (command == "encrypt"):
+                return machine.encrypt_full(text, keys)
+            else:
+                return machine.decrypt_full(text, keys)
         else:
             return keys + " " + command + " " + type + " " + alphabets
 
@@ -65,21 +91,27 @@ def generate_keys():
     if request.method == "POST":
         keys = request.form["keys"]
         type = request.form["type"]
+        bit = request.form["bit"]
 
         # TODO
         if (type == "1"):
             n, e, d = algorithms.RSA().generate_keys(keys)
             return str(n) + " " + str(e) + " " + str(d)
         elif (type == "2"):
-            return algorithms.ElGamalMachine.create_key()
+            machine = algorithms.ElGamalMachine()
+
+            public_key, private_key = machine.create_key(int(bit))
+            return public_key + " " + private_key
         elif (type == "3"):
             g, n, lamb, mu = algorithms.Paillier().generate_keys(keys)
             return str(g) + " " + str(n) + " " + str(lamb) + " " + str(mu)
         elif (type == "4"):
-            pass
+            machine = algorithms.ECCElGamalMachine()
+            pub_key, pri_key = machine.create_key_full(int(bit))
+            return pub_key + " " + pri_key
         else:
             return keys
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

@@ -13,12 +13,19 @@ function execute() {
     var command = document.getElementById('encrypt').checked ? 'encrypt' : 'decrypt';
     console.log("Command : " + command);
     var keys = document.getElementById('cipher-key').value != "" ? document.getElementById('cipher-key').value : "abcd";
-    
+    var text = document.getElementById('input-text-box').value
+
     var extra = "";
     var type = select.value;
 
     if (type == 3) {
         extra = "&r=" + document.getElementById("r-key").value;
+    }
+
+    if (type == 2 | type == 4) { 
+        console.log("MASUKKKK")
+        text = encodeURI(text)
+        keys = encodeURI(keys)
     }
     console.log(extra);
 
@@ -28,9 +35,14 @@ function execute() {
         }
     }
 
+    console.log("text")
+    console.log(document.getElementById('input-text-box').value)
+    console.log("keys")
+    console.log(keys)
+
     request.open('POST', '/update', true);
     request.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-    request.send("text=" + document.getElementById('input-text-box').value + "&command=" + command + "&keys=" + keys + "&type=" + type + extra);
+    request.send("text=" + text + "&command=" + command + "&keys=" + keys + "&type=" + type + extra);
 }
 
 function change_config_form(id) {
@@ -41,7 +53,7 @@ function change_config_form(id) {
         if (this.readyState == 4 && this.status == 200) {
             result.innerHTML = this.responseText;
 
-            if (id == 1 | id == 3) {
+            if (id == 1 | id == 2 | id == 3 | id == 4) {
                 var key_upload = document.getElementById('input-key');
 
                 key_upload.addEventListener('change', () => {

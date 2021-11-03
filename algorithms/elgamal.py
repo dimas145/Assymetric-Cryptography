@@ -62,6 +62,12 @@ class ElGamalMachine:
 
     def create_key_file(self, bit):
         public_key, private_key = self.create_key(bit)
+
+        pub = open("key.pub", "w")
+        pub.write(public_key)
+
+        pri = open("key.pri", "w")
+        pri.write(private_key)
         
 
     def encrypt(self, message, public_key):
@@ -79,6 +85,21 @@ class ElGamalMachine:
             b = Utils.dec_to_b64(res['b'])
             encrypted += a + b
         return encrypted
+
+    def encrypt_full(self, message, pub_key):
+        public_key = pub_key.split("=\n")[:-1]
+        public_key = { 'y': public_key[0] + "=\n", 'g': public_key[1] + "=\n", 'p': public_key[2] + "=\n" }
+
+        encrypted = self.encrypt(message, public_key)
+        return Utils.encrypted
+
+    def decrypt_full(self, encrypted, pri_key):
+        private_key = pri_key.split("=\n")[:-1]
+        private_key = { 'x': private_key[0] + "=\n", 'p': private_key[1] + "=\n" }
+        
+        decrypted = self.decrypt(encrypted, private_key)
+        return decrypted
+
 
     def decrypt(self, encrypted, private_key):
         x = Utils.b64_to_dec(private_key['x'])

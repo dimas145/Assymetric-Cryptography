@@ -33,6 +33,7 @@ class EllipticPoint:
     def __str__(self):
         return "({0}, {1})".format(self.x, self.y)
 
+
 class EllipticCurve:
     def __init__(self, a, b, p):
         ''' y^2 = x^3 + ax + b '''
@@ -110,6 +111,7 @@ class EllipticCurve:
     
             return res
 
+
 class ECCElGamalMachine:
     def __init__(self):
         pass
@@ -134,8 +136,8 @@ class ECCElGamalMachine:
     def create_agreement(self, bit):
         p = self.create_random_prime(bit)
 
-        curve_a = random.randint(-p, p)
-        curve_b = random.randint(-p, p)
+        curve_a = random.randint(-10, 10)
+        curve_b = random.randint(-200, 200)
 
         curve = EllipticCurve(curve_a, curve_b, p)
         curve.get_points()
@@ -163,6 +165,71 @@ class ECCElGamalMachine:
         private_key = pri
 
         return public_key, private_key
+
+    def create_key_full(self, bit):
+        p, curve_a, curve_b, B, k = self.create_agreement(bit)
+        public_key, private_key = self.create_key(p, curve_a, curve_b, B)
+
+        public_key = str(public_key.x) + "," + str(public_key.y)
+        B = str(B.x) + "," + str(B.y)
+
+        pub_key = public_key + " " + str(p) + " " + str(curve_a) + " " + str(curve_b) + " " + B + " " + str(k)
+        pri_key = str(private_key) + " " + str(p) + " " + str(curve_a) + " " + str(curve_b) + " " + str(k)
+        
+        pub_key = Utils.string_to_b64(pub_key)
+        pri_key = Utils.string_to_b64(pri_key)
+        
+        return pub_key, pri_key
+
+    def encrypt_full(self, message, pub_key):
+        pub_key = Utils.b64_to_string(pub_key)
+        pub_key = pub_key.split(" ")
+
+        public_key  = pub_key[0].split(",")
+        public_key  = EllipticPoint(int(public_key[0]), int(public_key[1]))
+        p           = int(pub_key[1])
+        curve_a     = int(pub_key[2])
+        curve_b     = int(pub_key[3])
+        B           = pub_key[4].split(",")
+        B           = EllipticPoint(int(B[0]), int(B[1]))
+        k           = int(pub_key[5])
+
+        encrypted = self.encrypt(message, public_key, p, curve_a, curve_b, B, k)
+
+        encrypted_text = ""
+
+        for i in range(len(encrypted)):
+            e = encrypted[i]
+            encrypted_text += str(e['kB'].x) + "," + str(e['kB'].y) + "," + str(e['PmkPb'].x) + "," + str(e['PmkPb'].y)
+            if(i != len(encrypted)-1):
+                encrypted_text += "\n"
+
+        return encrypted_text
+
+    def decrypt_full(self, encrypted_text, pri_key):
+        
+        encrypted = []
+        encrypted_text = encrypted_text.split("\n")
+        for i in range(len(encrypted_text)):
+            e = encrypted_text[i].split(",")
+            kB = EllipticPoint(int(e[0]), int(e[1]))
+            PmkPb = EllipticPoint(int(e[2]), int(e[3]))
+            encrypted.append({'kB': kB, 'PmkPb': PmkPb})
+
+
+        pri_key = Utils.b64_to_string(pri_key)
+        pri_key = pri_key.split(" ")
+
+        private_key = int(pri_key[0])
+        p           = int(pri_key[1])
+        curve_a     = int(pri_key[2])
+        curve_b     = int(pri_key[3])
+        k           = int(pri_key[4])
+
+        decrypted = self.decrypt(encrypted, private_key, p, curve_a, curve_b, k)
+
+        return decrypted
+
 
     def point_available(self, points, x):
         res = None
@@ -206,9 +273,10 @@ class ECCElGamalMachine:
 
         encoded = self.encode(message, p, curve_a, curve_b, k)
 
-        # print("ENCODED")
-        # for e in encoded:
-        #     print(e)
+        print("ENCODED")
+        for e in encoded:
+            print(e)
+        print()
 
         encrypted = []
 
@@ -222,8 +290,8 @@ class ECCElGamalMachine:
                     found = True
             
             encrypted.append({ 'kB': kB, 'PmkPb': PmkPb })
-            # print("kB\t:" + str(kB))
-            # print("PmkPb\t:" + str(PmkPb))
+            print("kB\t\t:" + str(kB))
+            print("PmkPb\t:" + str(PmkPb))
 
         return encrypted
 
@@ -238,10 +306,10 @@ class ECCElGamalMachine:
             # print("Mul\t: " + str(curve.point_scalar_multiplication(e['kB'], private_key)))
             decrypted.append(curve.point_substraction(e['PmkPb'], curve.point_scalar_multiplication(e['kB'], private_key)))
 
-        # print("DECRYPTED")
-        # for e in decrypted:
-        #     print(e)
+        print("DECRYPTED")
+        for e in decrypted:
+            print(e)
         decoded = self.decode(decrypted, p, curve_a, curve_b, k)
 
+        print()
         return decoded
-            

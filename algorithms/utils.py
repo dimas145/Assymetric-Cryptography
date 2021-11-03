@@ -31,6 +31,14 @@ class Utils:
         deci = Utils.hex_to_dec(Utils.b64_to_hex(b64))
         return deci
 
+    def string_to_b64(string):
+        b64= base64.b64encode(string.encode("ascii")).decode("ascii")
+        return b64
+
+    def b64_to_string(b64):
+        string = base64.b64decode(b64.encode("ascii")).decode("ascii")
+        return string
+
     def is_square(i):
         return i == math.isqrt(i) ** 2
 
@@ -39,6 +47,6 @@ class Utils:
         points = []
         n = n % p
         for x in range (1, p):
-            if ((x ** 2) % p == n) :
+            if (pow(x, 2, p) == n):
                 points.append(x)
         return points
